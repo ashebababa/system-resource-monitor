@@ -1,0 +1,14 @@
+.vscode/
+scratch.py
+
+__pycache__/
+*.pyc
+
+.venv/
+venv/
+
+.DS_Store
+Thumbs.db
+.vscode/'
+
+*.csv/
