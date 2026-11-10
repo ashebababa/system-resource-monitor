@@ -72,8 +72,6 @@ def get_cpu_usage():
 
     return cpu_usage
 
-
-# vv unfinished below vv
 def get_memory_usage():
     """
     Return a dictionary with memory (RAM) percent, used GB, and total GB.
@@ -84,9 +82,7 @@ def get_memory_usage():
 
     memory_info = {
         "percent": memory.percent,
-
         "used_gb": bytes_to_gb(memory.used),
-
         "total_gb": bytes_to_gb(memory.total),
     }
 
@@ -98,7 +94,7 @@ def get_disk_path():
     """
 
     system_name = "os_name"
-
+# line 102 problem: disk path shows as / instead of C:\
     if system_name == "Windows":
         return "C:\\"
     elif system_name == "Darwin" and os.path.exists("/System/Volumes/Data"):
@@ -120,4 +116,43 @@ def get_disk_usage():
     }
 
     return disk_info
-    
+
+
+def get_resource_summary():
+    """
+    Gather CPU, memory, and disk information into ONE dictionary.
+    """
+
+    memory = get_memory_usage()
+    disk = get_disk_usage()
+
+    summary = {
+        "cpu_percent": get_cpu_usage(),
+        "memory_percent": memory["percent"],
+        "memory_used_gb": memory["used_gb"],
+        "memory_total_gb": memory["total_gb"],
+        "disk_percent": disk["percent"],
+        "disk_used_gb": disk["used_gb"],
+        "disk_total_gb": disk["total_gb"],
+    }
+
+    return summary
+
+# vv unfinished belowvv
+def display_resource_summary(summary):
+    """
+    Print a resource summary dictionary in a readable format.
+    """
+
+    print()
+    print("Current System Status")
+    print("-" * 30)
+    print(f"CPU Usage:    {summary['cpu_percent']}%")
+
+    # TODO: Fill in the correct summary keys.
+    print(f"Memory Usage: {summary['memory_percent']}%")
+    print(f"Used Memory:  {summary['memory_used_gb']:.2f} GB")
+    print(f"Total Memory: {summary['memory_total_gb']:.2f} GB")
+    print(f"Disk Usage:   {summary['disk_percent']}%")
+    print(f"Used Disk:    {summary['disk_used_gb']:.2f} GB")
+    print(f"Total Disk:   {summary['disk_total_gb']:.2f} GB")
