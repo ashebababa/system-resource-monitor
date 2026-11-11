@@ -14,6 +14,12 @@ import psutil
 
 BYTES_PER_GB = 1024 ** 3
 
+THRESHOLDS = {
+    "cpu": 80,
+    "memory": 80,
+    "disk": 90,
+}
+
 def get_system_info():
     """
     Return a dictionary of basic information about this computer.
@@ -93,8 +99,7 @@ def get_disk_path():
     Return the path of the main disk for this operating system.
     """
 
-    system_name = "os_name"
-# line 102 problem: disk path shows as / instead of C:\
+    system_name = platform.system()
     if system_name == "Windows":
         return "C:\\"
     elif system_name == "Darwin" and os.path.exists("/System/Volumes/Data"):
@@ -138,7 +143,6 @@ def get_resource_summary():
 
     return summary
 
-# vv unfinished belowvv
 def display_resource_summary(summary):
     """
     Print a resource summary dictionary in a readable format.
@@ -149,10 +153,64 @@ def display_resource_summary(summary):
     print("-" * 30)
     print(f"CPU Usage:    {summary['cpu_percent']}%")
 
-    # TODO: Fill in the correct summary keys.
     print(f"Memory Usage: {summary['memory_percent']}%")
     print(f"Used Memory:  {summary['memory_used_gb']:.2f} GB")
     print(f"Total Memory: {summary['memory_total_gb']:.2f} GB")
     print(f"Disk Usage:   {summary['disk_percent']}%")
     print(f"Used Disk:    {summary['disk_used_gb']:.2f} GB")
     print(f"Total Disk:   {summary['disk_total_gb']:.2f} GB")
+
+
+def check_status(value, threshold):
+    """
+    Return "HIGH" if value is above threshold, otherwise "OK".
+    """
+
+    if value > threshold:
+        return "HIGH"
+    return "OK"
+
+def get_statuses(summary):
+    """
+    Return a dictionary with the status ("OK" or "HIGH") of each resource.
+    """
+
+    statuses = {
+        "cpu": check_status(summary["cpu_percent"], THRESHOLDS["cpu"]),
+
+        "memory": check_status(summary["memory_percent"], THRESHOLDS["memory"]),
+
+        "disk": check_status(summary["disk_percent"], THRESHOLDS["disk"]),
+    }
+
+    return statuses
+
+def get_warnings(summary):
+    """
+    Return a list of warning messages for any resource that is HIGH.
+    """
+
+    warnings = []
+    statuses = get_statuses(summary)
+
+    if statuses["cpu"] == "HIGH":
+        warnings.append("WARNING: CPU usage is high!")
+    if statuses["memory"] == "HIGH":
+        warnings.append("WARNING: Memory usage is high!")
+    if statuses["disk"] == "HIGH":
+        warnings.append("WARNING: Disk usage is high!")
+
+    return warnings
+
+def display_warnings(summary):
+    """
+    Print each warning, or a friendly message if there are none.
+    """
+
+    warnings = get_warnings(summary)
+
+    if len(warnings) == 0:
+        print("All resources are within normal limits.")
+    else:
+        for warning in get_warnings(summary):
+            print(warning)
