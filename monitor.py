@@ -20,6 +20,8 @@ THRESHOLDS = {
     "disk": 90,
 }
 
+REFRESH_SECONDS = 2
+
 def get_system_info():
     """
     Return a dictionary of basic information about this computer.
@@ -214,3 +216,62 @@ def display_warnings(summary):
     else:
         for warning in get_warnings(summary):
             print(warning)
+
+# -------------------------------------------------------------------
+# Part 8.2: Unclear. Why strikethrough? Why line 232 = dead code?
+# -------------------------------------------------------------------
+
+def clear_screen():
+    """
+    Clear the terminal window.
+    """
+
+    if os.name == "nt":
+        os.system("cls")
+    else:
+        os.system("clear")
+# -----------------
+def display_live_screen(summary):
+    """
+    Print one "frame" of the live monitor.
+    """
+
+    statuses = get_statuses(summary)
+
+    print("=" * 30)
+    print("   TB System Resource Monitor")
+    print("=" * 30)
+    print()
+    print(f"CPU Usage:      {summary['cpu_percent']}%")
+    print(f"Memory Usage:   {summary['memory_percent']}%")
+    print(f"Disk Usage:     {summary['disk_percent']}%")
+    print()
+    print("Status:")
+    print(f"CPU:    {statuses['cpu']}")
+    print(f"Memory: {statuses['memory']}")
+    print(f"Disk:   {statuses['disk']}")
+    print()
+    print("Press Ctrl+C to stop monitoring.")
+
+def start_live_monitor():
+    """
+    Keep refreshing the screen until the user presses Ctrl+C.
+    """
+
+    try:
+        # TODO: Start a loop that runs forever.
+        while True:
+            # TODO: Gather a fresh resource summary.
+            summary = get_resource_summary()
+
+            clear_screen()
+
+            # TODO: Display this summary on the screen.
+            display_live_screen(summary)
+
+            # TODO: Wait REFRESH_SECONDS seconds before the next refresh.
+            time.sleep(REFRESH_SECONDS)
+
+    except KeyboardInterrupt:
+        print()
+        print("Live monitor stopped. Returning to the menu...")
