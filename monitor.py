@@ -259,19 +259,70 @@ def start_live_monitor():
     """
 
     try:
-        # TODO: Start a loop that runs forever.
         while True:
-            # TODO: Gather a fresh resource summary.
             summary = get_resource_summary()
 
             clear_screen()
 
-            # TODO: Display this summary on the screen.
             display_live_screen(summary)
 
-            # TODO: Wait REFRESH_SECONDS seconds before the next refresh.
             time.sleep(REFRESH_SECONDS)
 
     except KeyboardInterrupt:
         print()
         print("Live monitor stopped. Returning to the menu...")
+
+
+def get_memory_value(process_info):
+    """
+    Return the memory percent from one process dictionary.
+    Used as the "key" when sorting.
+    """
+
+    return process_info["memory_percent"]
+
+def get_top_processes(limit=5):
+    """
+    Return a list of the processes using the most memory.
+    Each item in the list is a dictionary.
+    """
+
+    processes = []
+
+    for process in psutil.process_iter():
+        try:
+            process_info = {
+                "pid": process.pid,
+                "name": process.name(),
+                "memory_percent": process.memory_percent(),
+            }
+
+            processes.append(process_info)
+
+        except (psutil.NoSuchProcess, psutil.AccessDenied, psutil.ZombieProcess):
+            continue
+
+    processes.sort(key=get_memory_value, reverse=True)
+
+    return processes[:limit]
+
+def display_top_processes(limit=5):
+    """
+    Print the top processes in a table.
+    """
+
+    top_processes = get_top_processes(limit)
+
+    print()
+    print("Top Processes by Memory")
+    print()
+    print(f"{'PID':<8} {'Name':<25} {'Memory':>8}")
+    print("-" * 43)
+
+    for process_info in top_processes:
+        # TODO: Read the pid and memory_percent from the dictionary.
+        pid = process_info["pid"]
+        name = process_info["name"][:25]
+        memory = process_info["memory_percent"]
+
+        print(f"{pid:<8} {name:<25} {memory:>7.1f}%")
