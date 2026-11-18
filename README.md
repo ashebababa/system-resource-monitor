@@ -9,7 +9,7 @@ This application monitors and reports the usage of system resources on your devi
 - Display device system information, including os name, computer name, processor, and python version
 - No optional features added yet
 
-![Main Menu](screenshots/main menu.png)
+![Main Menu](screenshots/main%20menu.png)
 
 ## Technologies used
 - **Python**, **psutil**, and standard-library modules **platfrom**, **socket**, **os**, **time**, **csv**, and **datetime**.
