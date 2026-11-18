@@ -217,10 +217,6 @@ def display_warnings(summary):
         for warning in get_warnings(summary):
             print(warning)
 
-# -------------------------------------------------------------------
-# Part 8.2: Unclear. Why strikethrough? Why line 232 = dead code?
-# -------------------------------------------------------------------
-
 def clear_screen():
     """
     Clear the terminal window.
@@ -230,7 +226,6 @@ def clear_screen():
         os.system("cls")
     else:
         os.system("clear")
-# -----------------
 def display_live_screen(summary):
     """
     Print one "frame" of the live monitor.
@@ -320,7 +315,6 @@ def display_top_processes(limit=5):
     print("-" * 43)
 
     for process_info in top_processes:
-        # TODO: Read the pid and memory_percent from the dictionary.
         pid = process_info["pid"]
         name = process_info["name"][:25]
         memory = process_info["memory_percent"]
